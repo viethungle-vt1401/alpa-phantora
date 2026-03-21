@@ -1,0 +1,17 @@
+
+host_mapping = ['host-1', 'host-2', 'host-3', 'host-4']
+
+[simulator]
+loopback_speed = 2880
+fairness = "PerFlowMaxMin"
+
+[topology]
+type = "TwoLayerMultiPath"
+
+[topology.args]
+nspines = 2
+nracks = 2
+rack_size = 2
+host_bw = 800
+rack_uplink_port_bw = 800
+load_balancer_type = "EcmpEverything"
