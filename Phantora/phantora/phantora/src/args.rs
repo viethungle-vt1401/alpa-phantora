@@ -11,6 +11,10 @@ pub struct Args {
     #[arg(short = 'c', long = "netconfig")]
     pub net_config: path::PathBuf,
 
+    /// Path to the exported PyTorch computational graph (JSON)
+    #[arg(short = 'g', long = "graph")]
+    pub graph: path::PathBuf,
+
     /// Path to a file to collect event timeline trace for visualization.
     #[arg(long)]
     pub timeline_file: Option<path::PathBuf>,

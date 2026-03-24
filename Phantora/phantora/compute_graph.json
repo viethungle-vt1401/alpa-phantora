@@ -1,0 +1,2388 @@
+[
+    {
+        "name": "x",
+        "op": "placeholder",
+        "target": "x",
+        "args": [],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "embed",
+        "op": "call_module",
+        "target": "embed",
+        "args": [
+            "x"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_0_ln1",
+        "op": "call_module",
+        "target": "layers.0.ln1",
+        "args": [
+            "embed"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_0_attn_proj",
+        "op": "call_module",
+        "target": "layers.0.attn_proj",
+        "args": [
+            "layers_0_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "embed",
+            "layers_0_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_0_ln2",
+        "op": "call_module",
+        "target": "layers.0.ln2",
+        "args": [
+            "add"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_0_mlp_up",
+        "op": "call_module",
+        "target": "layers.0.mlp_up",
+        "args": [
+            "layers_0_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_0_relu",
+        "op": "call_module",
+        "target": "layers.0.relu",
+        "args": [
+            "layers_0_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_0_mlp_down",
+        "op": "call_module",
+        "target": "layers.0.mlp_down",
+        "args": [
+            "layers_0_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_1",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add",
+            "layers_0_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_1_ln1",
+        "op": "call_module",
+        "target": "layers.1.ln1",
+        "args": [
+            "add_1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_1_attn_proj",
+        "op": "call_module",
+        "target": "layers.1.attn_proj",
+        "args": [
+            "layers_1_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_2",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_1",
+            "layers_1_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_1_ln2",
+        "op": "call_module",
+        "target": "layers.1.ln2",
+        "args": [
+            "add_2"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_1_mlp_up",
+        "op": "call_module",
+        "target": "layers.1.mlp_up",
+        "args": [
+            "layers_1_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_1_relu",
+        "op": "call_module",
+        "target": "layers.1.relu",
+        "args": [
+            "layers_1_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_1_mlp_down",
+        "op": "call_module",
+        "target": "layers.1.mlp_down",
+        "args": [
+            "layers_1_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_3",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_2",
+            "layers_1_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_2_ln1",
+        "op": "call_module",
+        "target": "layers.2.ln1",
+        "args": [
+            "add_3"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_2_attn_proj",
+        "op": "call_module",
+        "target": "layers.2.attn_proj",
+        "args": [
+            "layers_2_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_4",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_3",
+            "layers_2_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_2_ln2",
+        "op": "call_module",
+        "target": "layers.2.ln2",
+        "args": [
+            "add_4"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_2_mlp_up",
+        "op": "call_module",
+        "target": "layers.2.mlp_up",
+        "args": [
+            "layers_2_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_2_relu",
+        "op": "call_module",
+        "target": "layers.2.relu",
+        "args": [
+            "layers_2_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_2_mlp_down",
+        "op": "call_module",
+        "target": "layers.2.mlp_down",
+        "args": [
+            "layers_2_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_5",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_4",
+            "layers_2_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_3_ln1",
+        "op": "call_module",
+        "target": "layers.3.ln1",
+        "args": [
+            "add_5"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_3_attn_proj",
+        "op": "call_module",
+        "target": "layers.3.attn_proj",
+        "args": [
+            "layers_3_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_6",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_5",
+            "layers_3_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_3_ln2",
+        "op": "call_module",
+        "target": "layers.3.ln2",
+        "args": [
+            "add_6"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_3_mlp_up",
+        "op": "call_module",
+        "target": "layers.3.mlp_up",
+        "args": [
+            "layers_3_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_3_relu",
+        "op": "call_module",
+        "target": "layers.3.relu",
+        "args": [
+            "layers_3_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_3_mlp_down",
+        "op": "call_module",
+        "target": "layers.3.mlp_down",
+        "args": [
+            "layers_3_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_7",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_6",
+            "layers_3_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_4_ln1",
+        "op": "call_module",
+        "target": "layers.4.ln1",
+        "args": [
+            "add_7"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_4_attn_proj",
+        "op": "call_module",
+        "target": "layers.4.attn_proj",
+        "args": [
+            "layers_4_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_8",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_7",
+            "layers_4_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_4_ln2",
+        "op": "call_module",
+        "target": "layers.4.ln2",
+        "args": [
+            "add_8"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_4_mlp_up",
+        "op": "call_module",
+        "target": "layers.4.mlp_up",
+        "args": [
+            "layers_4_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_4_relu",
+        "op": "call_module",
+        "target": "layers.4.relu",
+        "args": [
+            "layers_4_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_4_mlp_down",
+        "op": "call_module",
+        "target": "layers.4.mlp_down",
+        "args": [
+            "layers_4_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_9",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_8",
+            "layers_4_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_5_ln1",
+        "op": "call_module",
+        "target": "layers.5.ln1",
+        "args": [
+            "add_9"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_5_attn_proj",
+        "op": "call_module",
+        "target": "layers.5.attn_proj",
+        "args": [
+            "layers_5_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_10",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_9",
+            "layers_5_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_5_ln2",
+        "op": "call_module",
+        "target": "layers.5.ln2",
+        "args": [
+            "add_10"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_5_mlp_up",
+        "op": "call_module",
+        "target": "layers.5.mlp_up",
+        "args": [
+            "layers_5_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_5_relu",
+        "op": "call_module",
+        "target": "layers.5.relu",
+        "args": [
+            "layers_5_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_5_mlp_down",
+        "op": "call_module",
+        "target": "layers.5.mlp_down",
+        "args": [
+            "layers_5_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_11",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_10",
+            "layers_5_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_6_ln1",
+        "op": "call_module",
+        "target": "layers.6.ln1",
+        "args": [
+            "add_11"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_6_attn_proj",
+        "op": "call_module",
+        "target": "layers.6.attn_proj",
+        "args": [
+            "layers_6_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_12",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_11",
+            "layers_6_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_6_ln2",
+        "op": "call_module",
+        "target": "layers.6.ln2",
+        "args": [
+            "add_12"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_6_mlp_up",
+        "op": "call_module",
+        "target": "layers.6.mlp_up",
+        "args": [
+            "layers_6_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_6_relu",
+        "op": "call_module",
+        "target": "layers.6.relu",
+        "args": [
+            "layers_6_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_6_mlp_down",
+        "op": "call_module",
+        "target": "layers.6.mlp_down",
+        "args": [
+            "layers_6_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_13",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_12",
+            "layers_6_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_7_ln1",
+        "op": "call_module",
+        "target": "layers.7.ln1",
+        "args": [
+            "add_13"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_7_attn_proj",
+        "op": "call_module",
+        "target": "layers.7.attn_proj",
+        "args": [
+            "layers_7_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_14",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_13",
+            "layers_7_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_7_ln2",
+        "op": "call_module",
+        "target": "layers.7.ln2",
+        "args": [
+            "add_14"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_7_mlp_up",
+        "op": "call_module",
+        "target": "layers.7.mlp_up",
+        "args": [
+            "layers_7_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_7_relu",
+        "op": "call_module",
+        "target": "layers.7.relu",
+        "args": [
+            "layers_7_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_7_mlp_down",
+        "op": "call_module",
+        "target": "layers.7.mlp_down",
+        "args": [
+            "layers_7_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_15",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_14",
+            "layers_7_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_8_ln1",
+        "op": "call_module",
+        "target": "layers.8.ln1",
+        "args": [
+            "add_15"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_8_attn_proj",
+        "op": "call_module",
+        "target": "layers.8.attn_proj",
+        "args": [
+            "layers_8_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_16",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_15",
+            "layers_8_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_8_ln2",
+        "op": "call_module",
+        "target": "layers.8.ln2",
+        "args": [
+            "add_16"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_8_mlp_up",
+        "op": "call_module",
+        "target": "layers.8.mlp_up",
+        "args": [
+            "layers_8_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_8_relu",
+        "op": "call_module",
+        "target": "layers.8.relu",
+        "args": [
+            "layers_8_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_8_mlp_down",
+        "op": "call_module",
+        "target": "layers.8.mlp_down",
+        "args": [
+            "layers_8_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_17",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_16",
+            "layers_8_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_9_ln1",
+        "op": "call_module",
+        "target": "layers.9.ln1",
+        "args": [
+            "add_17"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_9_attn_proj",
+        "op": "call_module",
+        "target": "layers.9.attn_proj",
+        "args": [
+            "layers_9_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_18",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_17",
+            "layers_9_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_9_ln2",
+        "op": "call_module",
+        "target": "layers.9.ln2",
+        "args": [
+            "add_18"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_9_mlp_up",
+        "op": "call_module",
+        "target": "layers.9.mlp_up",
+        "args": [
+            "layers_9_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_9_relu",
+        "op": "call_module",
+        "target": "layers.9.relu",
+        "args": [
+            "layers_9_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_9_mlp_down",
+        "op": "call_module",
+        "target": "layers.9.mlp_down",
+        "args": [
+            "layers_9_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_19",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_18",
+            "layers_9_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_10_ln1",
+        "op": "call_module",
+        "target": "layers.10.ln1",
+        "args": [
+            "add_19"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_10_attn_proj",
+        "op": "call_module",
+        "target": "layers.10.attn_proj",
+        "args": [
+            "layers_10_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_20",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_19",
+            "layers_10_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_10_ln2",
+        "op": "call_module",
+        "target": "layers.10.ln2",
+        "args": [
+            "add_20"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_10_mlp_up",
+        "op": "call_module",
+        "target": "layers.10.mlp_up",
+        "args": [
+            "layers_10_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_10_relu",
+        "op": "call_module",
+        "target": "layers.10.relu",
+        "args": [
+            "layers_10_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_10_mlp_down",
+        "op": "call_module",
+        "target": "layers.10.mlp_down",
+        "args": [
+            "layers_10_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_21",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_20",
+            "layers_10_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_11_ln1",
+        "op": "call_module",
+        "target": "layers.11.ln1",
+        "args": [
+            "add_21"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_11_attn_proj",
+        "op": "call_module",
+        "target": "layers.11.attn_proj",
+        "args": [
+            "layers_11_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_22",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_21",
+            "layers_11_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_11_ln2",
+        "op": "call_module",
+        "target": "layers.11.ln2",
+        "args": [
+            "add_22"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_11_mlp_up",
+        "op": "call_module",
+        "target": "layers.11.mlp_up",
+        "args": [
+            "layers_11_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_11_relu",
+        "op": "call_module",
+        "target": "layers.11.relu",
+        "args": [
+            "layers_11_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_11_mlp_down",
+        "op": "call_module",
+        "target": "layers.11.mlp_down",
+        "args": [
+            "layers_11_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_23",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_22",
+            "layers_11_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_12_ln1",
+        "op": "call_module",
+        "target": "layers.12.ln1",
+        "args": [
+            "add_23"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_12_attn_proj",
+        "op": "call_module",
+        "target": "layers.12.attn_proj",
+        "args": [
+            "layers_12_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_24",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_23",
+            "layers_12_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_12_ln2",
+        "op": "call_module",
+        "target": "layers.12.ln2",
+        "args": [
+            "add_24"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_12_mlp_up",
+        "op": "call_module",
+        "target": "layers.12.mlp_up",
+        "args": [
+            "layers_12_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_12_relu",
+        "op": "call_module",
+        "target": "layers.12.relu",
+        "args": [
+            "layers_12_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_12_mlp_down",
+        "op": "call_module",
+        "target": "layers.12.mlp_down",
+        "args": [
+            "layers_12_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_25",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_24",
+            "layers_12_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_13_ln1",
+        "op": "call_module",
+        "target": "layers.13.ln1",
+        "args": [
+            "add_25"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_13_attn_proj",
+        "op": "call_module",
+        "target": "layers.13.attn_proj",
+        "args": [
+            "layers_13_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_26",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_25",
+            "layers_13_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_13_ln2",
+        "op": "call_module",
+        "target": "layers.13.ln2",
+        "args": [
+            "add_26"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_13_mlp_up",
+        "op": "call_module",
+        "target": "layers.13.mlp_up",
+        "args": [
+            "layers_13_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_13_relu",
+        "op": "call_module",
+        "target": "layers.13.relu",
+        "args": [
+            "layers_13_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_13_mlp_down",
+        "op": "call_module",
+        "target": "layers.13.mlp_down",
+        "args": [
+            "layers_13_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_27",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_26",
+            "layers_13_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_14_ln1",
+        "op": "call_module",
+        "target": "layers.14.ln1",
+        "args": [
+            "add_27"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_14_attn_proj",
+        "op": "call_module",
+        "target": "layers.14.attn_proj",
+        "args": [
+            "layers_14_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_28",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_27",
+            "layers_14_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_14_ln2",
+        "op": "call_module",
+        "target": "layers.14.ln2",
+        "args": [
+            "add_28"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_14_mlp_up",
+        "op": "call_module",
+        "target": "layers.14.mlp_up",
+        "args": [
+            "layers_14_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_14_relu",
+        "op": "call_module",
+        "target": "layers.14.relu",
+        "args": [
+            "layers_14_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_14_mlp_down",
+        "op": "call_module",
+        "target": "layers.14.mlp_down",
+        "args": [
+            "layers_14_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_29",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_28",
+            "layers_14_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_15_ln1",
+        "op": "call_module",
+        "target": "layers.15.ln1",
+        "args": [
+            "add_29"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_15_attn_proj",
+        "op": "call_module",
+        "target": "layers.15.attn_proj",
+        "args": [
+            "layers_15_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_30",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_29",
+            "layers_15_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_15_ln2",
+        "op": "call_module",
+        "target": "layers.15.ln2",
+        "args": [
+            "add_30"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_15_mlp_up",
+        "op": "call_module",
+        "target": "layers.15.mlp_up",
+        "args": [
+            "layers_15_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_15_relu",
+        "op": "call_module",
+        "target": "layers.15.relu",
+        "args": [
+            "layers_15_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_15_mlp_down",
+        "op": "call_module",
+        "target": "layers.15.mlp_down",
+        "args": [
+            "layers_15_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_31",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_30",
+            "layers_15_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_16_ln1",
+        "op": "call_module",
+        "target": "layers.16.ln1",
+        "args": [
+            "add_31"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_16_attn_proj",
+        "op": "call_module",
+        "target": "layers.16.attn_proj",
+        "args": [
+            "layers_16_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_32",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_31",
+            "layers_16_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_16_ln2",
+        "op": "call_module",
+        "target": "layers.16.ln2",
+        "args": [
+            "add_32"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_16_mlp_up",
+        "op": "call_module",
+        "target": "layers.16.mlp_up",
+        "args": [
+            "layers_16_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_16_relu",
+        "op": "call_module",
+        "target": "layers.16.relu",
+        "args": [
+            "layers_16_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_16_mlp_down",
+        "op": "call_module",
+        "target": "layers.16.mlp_down",
+        "args": [
+            "layers_16_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_33",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_32",
+            "layers_16_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_17_ln1",
+        "op": "call_module",
+        "target": "layers.17.ln1",
+        "args": [
+            "add_33"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_17_attn_proj",
+        "op": "call_module",
+        "target": "layers.17.attn_proj",
+        "args": [
+            "layers_17_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_34",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_33",
+            "layers_17_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_17_ln2",
+        "op": "call_module",
+        "target": "layers.17.ln2",
+        "args": [
+            "add_34"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_17_mlp_up",
+        "op": "call_module",
+        "target": "layers.17.mlp_up",
+        "args": [
+            "layers_17_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_17_relu",
+        "op": "call_module",
+        "target": "layers.17.relu",
+        "args": [
+            "layers_17_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_17_mlp_down",
+        "op": "call_module",
+        "target": "layers.17.mlp_down",
+        "args": [
+            "layers_17_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_35",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_34",
+            "layers_17_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_18_ln1",
+        "op": "call_module",
+        "target": "layers.18.ln1",
+        "args": [
+            "add_35"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_18_attn_proj",
+        "op": "call_module",
+        "target": "layers.18.attn_proj",
+        "args": [
+            "layers_18_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_36",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_35",
+            "layers_18_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_18_ln2",
+        "op": "call_module",
+        "target": "layers.18.ln2",
+        "args": [
+            "add_36"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_18_mlp_up",
+        "op": "call_module",
+        "target": "layers.18.mlp_up",
+        "args": [
+            "layers_18_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_18_relu",
+        "op": "call_module",
+        "target": "layers.18.relu",
+        "args": [
+            "layers_18_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_18_mlp_down",
+        "op": "call_module",
+        "target": "layers.18.mlp_down",
+        "args": [
+            "layers_18_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_37",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_36",
+            "layers_18_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_19_ln1",
+        "op": "call_module",
+        "target": "layers.19.ln1",
+        "args": [
+            "add_37"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_19_attn_proj",
+        "op": "call_module",
+        "target": "layers.19.attn_proj",
+        "args": [
+            "layers_19_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_38",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_37",
+            "layers_19_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_19_ln2",
+        "op": "call_module",
+        "target": "layers.19.ln2",
+        "args": [
+            "add_38"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_19_mlp_up",
+        "op": "call_module",
+        "target": "layers.19.mlp_up",
+        "args": [
+            "layers_19_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_19_relu",
+        "op": "call_module",
+        "target": "layers.19.relu",
+        "args": [
+            "layers_19_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_19_mlp_down",
+        "op": "call_module",
+        "target": "layers.19.mlp_down",
+        "args": [
+            "layers_19_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_39",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_38",
+            "layers_19_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_20_ln1",
+        "op": "call_module",
+        "target": "layers.20.ln1",
+        "args": [
+            "add_39"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_20_attn_proj",
+        "op": "call_module",
+        "target": "layers.20.attn_proj",
+        "args": [
+            "layers_20_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_40",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_39",
+            "layers_20_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_20_ln2",
+        "op": "call_module",
+        "target": "layers.20.ln2",
+        "args": [
+            "add_40"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_20_mlp_up",
+        "op": "call_module",
+        "target": "layers.20.mlp_up",
+        "args": [
+            "layers_20_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_20_relu",
+        "op": "call_module",
+        "target": "layers.20.relu",
+        "args": [
+            "layers_20_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_20_mlp_down",
+        "op": "call_module",
+        "target": "layers.20.mlp_down",
+        "args": [
+            "layers_20_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_41",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_40",
+            "layers_20_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_21_ln1",
+        "op": "call_module",
+        "target": "layers.21.ln1",
+        "args": [
+            "add_41"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_21_attn_proj",
+        "op": "call_module",
+        "target": "layers.21.attn_proj",
+        "args": [
+            "layers_21_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_42",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_41",
+            "layers_21_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_21_ln2",
+        "op": "call_module",
+        "target": "layers.21.ln2",
+        "args": [
+            "add_42"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_21_mlp_up",
+        "op": "call_module",
+        "target": "layers.21.mlp_up",
+        "args": [
+            "layers_21_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_21_relu",
+        "op": "call_module",
+        "target": "layers.21.relu",
+        "args": [
+            "layers_21_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_21_mlp_down",
+        "op": "call_module",
+        "target": "layers.21.mlp_down",
+        "args": [
+            "layers_21_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_43",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_42",
+            "layers_21_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_22_ln1",
+        "op": "call_module",
+        "target": "layers.22.ln1",
+        "args": [
+            "add_43"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_22_attn_proj",
+        "op": "call_module",
+        "target": "layers.22.attn_proj",
+        "args": [
+            "layers_22_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_44",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_43",
+            "layers_22_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_22_ln2",
+        "op": "call_module",
+        "target": "layers.22.ln2",
+        "args": [
+            "add_44"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_22_mlp_up",
+        "op": "call_module",
+        "target": "layers.22.mlp_up",
+        "args": [
+            "layers_22_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_22_relu",
+        "op": "call_module",
+        "target": "layers.22.relu",
+        "args": [
+            "layers_22_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_22_mlp_down",
+        "op": "call_module",
+        "target": "layers.22.mlp_down",
+        "args": [
+            "layers_22_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_45",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_44",
+            "layers_22_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_23_ln1",
+        "op": "call_module",
+        "target": "layers.23.ln1",
+        "args": [
+            "add_45"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_23_attn_proj",
+        "op": "call_module",
+        "target": "layers.23.attn_proj",
+        "args": [
+            "layers_23_ln1"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_46",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_45",
+            "layers_23_attn_proj"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_23_ln2",
+        "op": "call_module",
+        "target": "layers.23.ln2",
+        "args": [
+            "add_46"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "layers_23_mlp_up",
+        "op": "call_module",
+        "target": "layers.23.mlp_up",
+        "args": [
+            "layers_23_ln2"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_23_relu",
+        "op": "call_module",
+        "target": "layers.23.relu",
+        "args": [
+            "layers_23_mlp_up"
+        ],
+        "output_shape": [
+            64,
+            8192
+        ]
+    },
+    {
+        "name": "layers_23_mlp_down",
+        "op": "call_module",
+        "target": "layers.23.mlp_down",
+        "args": [
+            "layers_23_relu"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "add_47",
+        "op": "call_function",
+        "target": "<built-in function add>",
+        "args": [
+            "add_46",
+            "layers_23_mlp_down"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    },
+    {
+        "name": "output",
+        "op": "output",
+        "target": "output",
+        "args": [
+            "add_47"
+        ],
+        "output_shape": [
+            64,
+            2048
+        ]
+    }
+]
