@@ -2,8 +2,9 @@
 numpy
 mpi4py
 torch
-torchvision
 matplotlib
 deepspeed
 transformers
 datasets
+megatron-core
+torchtitan

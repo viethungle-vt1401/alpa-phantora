@@ -1,0 +1,9 @@
+--extra-index-url https://download.pytorch.org/whl/cu118
+numpy
+mpi4py
+torch
+matplotlib
+deepspeed
+transformers
+datasets
+megatron-core
