@@ -23,7 +23,7 @@ fn main() {
     println!("Compute layers after topological sort: {}", sorted_layers.len());
 
     // 5. Run the Alpa DP + ILP Search
-    let num_gpus = 16;        
+    let num_gpus = 4;        
     let microbatches = 64.0; 
     
     let (best_pipeline_latency, schedule) = find_optimal_pipeline(&sorted_layers, num_gpus, microbatches);

@@ -66,7 +66,7 @@ pub fn topological_sort(graph: &ComputeGraph) -> Vec<ComputeNode> {
 
 // --- 3. Intra-Op ILP Solver ---
 const DEVICE_MEMORY_LIMIT_BYTES: f64 = 16.0 * 1024.0 * 1024.0 * 1024.0; // Back to 16GB
-const ALPHA_COMM: f64 = 500.0; // MASSIVE communication penalty!
+const ALPHA_COMM: f64 = 0.5;
 const BETA_COMM: f64 = 0.05;
 const RESHARDING_PENALTY: f64 = 2.5;
 
