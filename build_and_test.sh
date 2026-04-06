@@ -12,7 +12,7 @@ module load cuda
 
 # Activate environments
 source ~/.cargo/env
-source ~/work/alpa-phantora/.venv/bin/activate
+source .venv/bin/activate
 
 # Fix tch/PyTorch issues
 export LIBTORCH_USE_PYTORCH=1
@@ -31,18 +31,32 @@ export LD_LIBRARY_PATH=$PYTHON_LIB:$LD_LIBRARY_PATH
 cd ~/work/alpa-phantora/Phantora/phantora
 cargo build --release
 
-# 6. Extract the computational graph from PyTorch
-echo "Building computational graph..."
-python build_graph.py
+# === DYNAMIC BATCH JOB CONFIGURATION ===
+# Use the unique SLURM Job ID to create a unique filename for this run.
+# If SLURM_JOB_ID is not set (e.g., running the script manually outside of sbatch), 
+# it defaults to 'local_' + the shell's process ID.
+JOB_ID=${SLURM_JOB_ID:-local_$$}
+GRAPH_FILENAME="compute_graphs/compute_graph_${JOB_ID}.json"
 
-# 7. Run the Rust simulator with the generated graph in the background
-echo "Starting Phantora Simulator..."
+# 6. Extract the computational graph from PyTorch
+echo "Building computational graph -> ${GRAPH_FILENAME}..."
+python build_graph.py \
+    --output ${GRAPH_FILENAME} \
+    --batch-size 256 \
+    --hidden-size 2048
+
+# 7. Run the Rust simulator with the uniquely generated graph
+echo "Starting Phantora Simulator with ${GRAPH_FILENAME}..."
 RUST_BACKTRACE=full ./target/release/simulator \
     --netconfig ~/work/alpa-phantora/Phantora/netconfig.toml \
-    --graph compute_graph.json &
+    --graph ${GRAPH_FILENAME} &
 
 # 8. Capture the simulator's process ID and wait for it to finish
 SIM_PID=$!
 wait $SIM_PID
 
-echo "Simulation complete."
+# 9. Clean up the JSON file to save disk space on the cluster
+rm ${GRAPH_FILENAME}
+echo "Cleaned up ${GRAPH_FILENAME}."
+
+echo "Simulation complete for Job ${JOB_ID}."
