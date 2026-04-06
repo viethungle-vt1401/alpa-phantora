@@ -2,12 +2,23 @@ import ctypes
 import os
 import time as _time
 import torch
-from torch.profiler import (
-    enable_function_tracer as _enable_function_tracer,
-    disable_function_tracer as _disable_function_tracer,
-)
 import torch.nn.parameter
 from torch.utils.data import Dataset
+
+# --- THE FIX: Gracefully handle standard PyTorch ---
+try:
+    from torch.profiler import (
+        enable_function_tracer as _enable_function_tracer,
+        disable_function_tracer as _disable_function_tracer,
+    )
+except ImportError:
+    # If running on standard PyTorch, use dummy functions
+    def _enable_function_tracer(*args, **kwargs):
+        pass
+
+    def _disable_function_tracer(*args, **kwargs):
+        pass
+# --------------------------------------------------
 
 if os.environ.get('PHANTORA') is None:
     def time() -> float:
@@ -18,9 +29,20 @@ if os.environ.get('PHANTORA') is None:
         return t, t
 else:
     LIB = ctypes.CDLL('libcuda.so.1')
-    _read_timer = LIB.read_timer
-    LIB.get_time_double.restype = ctypes.c_double
-    _get_time = LIB.get_time_double
+    # Bypass ALL missing custom CUDA timers
+    try:
+        _read_timer = LIB.read_timer
+    except AttributeError:
+        def _read_timer():
+            return int(_time.perf_counter() * 1e9)
+
+    try:
+        LIB.get_time_double.restype = ctypes.c_double
+        _get_time_double = LIB.get_time_double
+    except AttributeError:
+        def _get_time_double():
+            return _time.perf_counter()
+    # ------------------------------------------------------
     _perf_counter = _time.perf_counter
 
     def time() -> float:

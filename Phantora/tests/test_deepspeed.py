@@ -5,10 +5,12 @@ from phantora_utils import (
     RandomTokens,
 )
 import torch
+import os
 from transformers import LlamaConfig, LlamaForCausalLM
 from torch.utils.data import DataLoader
 import torch.distributed as dist
 import deepspeed
+
 
 def main(
     local_rank,
@@ -33,9 +35,8 @@ def main(
 
     dtype_orig = torch.get_default_dtype()
     torch.set_default_dtype(torch.bfloat16)
-    with torch.device('meta'):
-        model = LlamaForCausalLM(config)
-    model = model.to_empty(device=local_rank)
+    config._attn_implementation = "eager"
+    model = LlamaForCausalLM(config)
     torch.set_default_dtype(dtype_orig)
     print(f"Model size: {sum(p.numel() for p in model.parameters())}")
 
@@ -72,12 +73,30 @@ def main(
     duras_wall = []
     for source, label in data_loader:
         start, start_wall = time_pair()
-        source = source.to(local_rank)
-        label = label.to(local_rank)
+
+        # --- SAFE DEVICE MAPPING ---
+        if torch.cuda.is_available():
+            # Explicitly fetch the rank and format it as a CUDA device string
+            local_device_id = int(os.environ.get("LOCAL_RANK", 0))
+            device = torch.device(f"cuda:{local_device_id}")
+        else:
+            device = torch.device("cpu")
+
+        source = source.to(device)
+        label = label.to(device)
+        # ---------------------------
+
         loss = model_engine(source, labels=label).loss
         model_engine.backward(loss)
         model_engine.step()
-        loss.cpu()  # trigger sync
+
+        # Trigger sync by moving the tiny loss scalar back to CPU
+        loss.cpu() 
+
+        # Safe hardware sync for accurate benchmarking
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
+
         end, end_wall = time_pair()
         print(f"time: {end - start:.2f} wall: {end_wall - start_wall:.2f}\n", end="")
         duras.append(end - start)

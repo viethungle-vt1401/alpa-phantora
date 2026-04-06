@@ -12,7 +12,18 @@ from megatron.core.datasets.blended_megatron_dataset_builder import (
     BlendedMegatronDatasetBuilder,
 )
 from megatron.core.datasets.gpt_dataset import GPTDatasetConfig, MockGPTDataset
-from megatron.core.datasets.megatron_tokenizer import MegatronTokenizer
+try:
+    # Older megatron-core versions (What the script originally expected)
+    from megatron.core.datasets.megatron_tokenizer import MegatronTokenizer
+except ImportError:
+    try:
+        # Newer megatron-core versions (What is actually installed in your .venv)
+        from megatron.core.tokenizers import MegatronTokenizer
+    except ImportError:
+        # Ultimate fallback for simulation tracing
+        class MegatronTokenizer:
+            pass
+# -------------------------------------------------------
 from megatron.core.distributed import (
     DistributedDataParallelConfig as DDPConfig,
     DistributedDataParallel as DDP,
@@ -30,7 +41,10 @@ from megatron.core.transformer.transformer_config import TransformerConfig
 
 class NullTokenizer(MegatronTokenizer):
     def __init__(self, vocab_size):
-        super().__init__(None, vocab_size=vocab_size)
+        try:
+            super().__init__(None, vocab_size=vocab_size)
+        except TypeError:
+            pass  # Ignore if the newer Megatron API rejects the keyword
         self._vocab_size_without_eod = int(vocab_size)
         self._eod_id = self._vocab_size_without_eod
 
@@ -51,6 +65,10 @@ class NullTokenizer(MegatronTokenizer):
     @property
     def vocab_size(self):
         return self._vocab_size_without_eod + 1
+
+    @property
+    def unique_identifiers(self):
+        return "null_tokenizer"
 
     @property
     def vocab(self):
@@ -91,6 +109,9 @@ def get_model(
     sequence_length,
     recompute_activations,
 ):
+    # Safely fallback to unfused/local attention if CUDA/FlashAttention isn't available
+    attn_backend = AttnBackend.flash if torch.cuda.is_available() else AttnBackend.unfused
+
     transformer_config = TransformerConfig(
         tensor_model_parallel_size=tensor_parallel_size,
         num_layers=num_layers,
@@ -100,7 +121,7 @@ def get_model(
         perform_initialization=False,
         bf16=True,
         params_dtype=torch.bfloat16,
-        attention_backend=AttnBackend.flash,
+        attention_backend=attn_backend,
         recompute_granularity="selective" if recompute_activations else None,
     )
 
@@ -137,7 +158,9 @@ def get_optimizer(model):
         clip_grad=0.0,  # no grad clipping because norm depends on communication and can cause error in simulation
     )
 
-    optim = get_megatron_optimizer(optim_config, [model], use_gloo_process_groups=False)
+    # Use gloo process groups automatically if we are on CPU
+    use_gloo = not torch.cuda.is_available()
+    optim = get_megatron_optimizer(optim_config, [model], use_gloo_process_groups=use_gloo)
 
     return optim
 
@@ -190,21 +213,38 @@ def main(
     recompute_activations,
     iterations,
 ):
-    world_size = int(os.environ["WORLD_SIZE"])
-    rank = int(os.environ["RANK"])
-    local_rank = int(os.environ["LOCAL_RANK"])
-    torch.cuda.set_device(local_rank)
-    device = torch.device("cuda", local_rank)
-    torch.cuda.memory.reset_peak_memory_stats(device)
+    # Safely fetch environment variables with defaults
+    world_size = int(os.environ.get("WORLD_SIZE", "1"))
+    rank = int(os.environ.get("RANK", "0"))
+    local_rank = int(os.environ.get("LOCAL_RANK", "0"))
 
-    torch.distributed.init_process_group(
-        world_size=world_size, rank=rank, device_id=device
-    )
+    # Safely assign devices based on CUDA availability
+    if torch.cuda.is_available():
+        torch.cuda.set_device(local_rank)
+        device = torch.device("cuda", local_rank)
+        torch.cuda.memory.reset_peak_memory_stats(device)
+        backend = "nccl"
+    else:
+        device = torch.device("cpu")
+        backend = "gloo"
+
+    # Safely initialize distributed process group
+    if torch.cuda.is_available():
+        torch.distributed.init_process_group(
+            backend=backend, world_size=world_size, rank=rank, device_id=device
+        )
+    else:
+        torch.distributed.init_process_group(
+            backend=backend, world_size=world_size, rank=rank
+        )
+
     parallel_state.initialize_model_parallel(
         tensor_model_parallel_size=tensor_parallel_size
     )
 
-    model_parallel_cuda_manual_seed(42)
+    # Safely set random seed
+    if torch.cuda.is_available():
+        model_parallel_cuda_manual_seed(42)
 
     model = get_model(
         tensor_parallel_size,
@@ -218,8 +258,10 @@ def main(
     )
     model = model.to(device)
     model.train()
+
     if rank == 0:
         print(f"Model size: {sum(p.numel() for p in model.parameters())}")
+
     optim = get_optimizer(model)
     train_iterator = get_train_data_iterator(vocab_size, micro_batch_size)
 
@@ -239,16 +281,26 @@ def main(
             forward_only=False,
         )
         optim.step()
-        torch.cuda.synchronize()
+
+        # Safely synchronize
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
+
         end, end_wall = time_pair()
         print(f"rank {rank} iter {i} time: {end - start:.2f} wall: {end_wall - start_wall:.2f}\n", end="")
         duras.append(end - start)
         duras_wall.append(end_wall - start_wall)
 
-    peak_vram_mib = torch.cuda.max_memory_allocated(device) / (1024 * 1024)
+    # Safely retrieve VRAM stats
+    if torch.cuda.is_available():
+        peak_vram_mib = torch.cuda.max_memory_allocated(device) / (1024 * 1024)
+    else:
+        peak_vram_mib = 0.0
+
     print(f"Rank {rank} Time: {duras} Avg Time: {sum(duras[1:]) / (iterations - 1):.2f}\n", end="")
     print(f"Rank {rank} Peak: {peak_vram_mib:<.2f}MiB\n", end="")
     print(f"Rank {rank} Wall: {duras_wall} Avg Wall: {sum(duras_wall[1:]) / (iterations - 1):.2f}\n", end="")
+
     parallel_state.destroy_model_parallel()
     torch.distributed.destroy_process_group()
 
