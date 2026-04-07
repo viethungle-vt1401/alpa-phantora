@@ -5,7 +5,7 @@ import torch
 import torch.nn.parameter
 from torch.utils.data import Dataset
 
-# --- THE FIX: Gracefully handle standard PyTorch ---
+# Gracefully handle standard PyTorch
 try:
     from torch.profiler import (
         enable_function_tracer as _enable_function_tracer,
@@ -28,38 +28,38 @@ if os.environ.get('PHANTORA') is None:
         t = _time.perf_counter()
         return t, t
 else:
+    # Save the original timer before we overwrite it
+    _original_perf_counter = _time.perf_counter
+    
     LIB = ctypes.CDLL('libcuda.so.1')
-    # Bypass ALL missing custom CUDA timers
+    
     try:
         _read_timer = LIB.read_timer
     except AttributeError:
         def _read_timer():
-            return int(_time.perf_counter() * 1e9)
+            # Use the original timer!
+            return int(_original_perf_counter() * 1e9)
 
     try:
         LIB.get_time_double.restype = ctypes.c_double
         _get_time_double = LIB.get_time_double
     except AttributeError:
         def _get_time_double():
-            return _time.perf_counter()
-    # ------------------------------------------------------
-    _perf_counter = _time.perf_counter
+            # Use the original timer!
+            return _original_perf_counter()
 
     def time() -> float:
         _read_timer()
-        return _get_time()
+        return _get_time_double()
 
     def time_pair() -> float:
         _read_timer()
-        t = _get_time()
-        t_wall = _perf_counter()
+        t = _get_time_double()
+        t_wall = _original_perf_counter()
         return t, t_wall
 
     _time.perf_counter = time
 
-    # seems cannot patch `assert_ints_same_as_other_ranks`
-    # maybe due to decorator, but cannot reproduce in a mini example
-    # patch `get_lst_from_rank0` instead
     try:
         def identity(x):
             return x

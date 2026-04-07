@@ -31,11 +31,11 @@ def main(
         num_attention_heads=num_attention_heads,
         max_position_embeddings=seq_len,
     )
-    config._attn_implementation = "flash_attention_2"
+    config._attn_implementation = "eager"
 
     dtype_orig = torch.get_default_dtype()
     torch.set_default_dtype(torch.bfloat16)
-    config._attn_implementation = "eager"
+
     model = LlamaForCausalLM(config)
     torch.set_default_dtype(dtype_orig)
     print(f"Model size: {sum(p.numel() for p in model.parameters())}")
@@ -91,7 +91,7 @@ def main(
         model_engine.step()
 
         # Trigger sync by moving the tiny loss scalar back to CPU
-        loss.cpu() 
+        loss.cpu()
 
         # Safe hardware sync for accurate benchmarking
         if torch.cuda.is_available():

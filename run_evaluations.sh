@@ -4,7 +4,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=64gb                   # Job memory request
-#SBATCH --time=4:00:00               # Time limit hrs:min:sec
+#SBATCH --time=24:00:00              # Time limit hrs:min:sec
 #SBATCH --partition=compsci-gpu
 #SBATCH --gres=gpu:4
 #SBATCH --no-requeue
@@ -67,7 +67,7 @@ run_framework_eval() {
         
         START_TIME=$(date +%s%3N)
         # Output flows directly to SLURM log
-        torchrun --nproc_per_node=4 $TEST_SCRIPT --num_layers 4 --hidden_size 1024 --micro_batch_size 1
+        CUDA_LAUNCH_BLOCKING=1 torchrun --nproc_per_node=4 $TEST_SCRIPT --num_layers 4 --hidden_size 1024 --micro_batch_size 1 --sequence_length 1024
         END_TIME=$(date +%s%3N)
         
         REAL_DURATION=$((END_TIME - START_TIME))
@@ -96,7 +96,7 @@ run_framework_eval() {
         START_TIME=$(date +%s%3N)
         
         # Run the simulator with 4 distributed CPU processes
-        torchrun --nproc_per_node=4 $TEST_SCRIPT --num_layers 4 --hidden_size 1024 --micro_batch_size 1
+        torchrun --nproc_per_node=4 $TEST_SCRIPT --num_layers 4 --hidden_size 1024 --micro_batch_size 1 --sequence_length 1024
         
         END_TIME=$(date +%s%3N)
         

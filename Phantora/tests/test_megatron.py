@@ -6,6 +6,58 @@ from phantora_utils import (
 import os
 import functools
 import torch
+
+# --- Monkey-Patch CUDA for Megatron's CPU Simulation ---
+if not torch.cuda.is_available():
+    # 1. Trick Megatron into thinking the CPU is the current GPU
+    torch.cuda.current_device = lambda: torch.device("cpu")
+    torch.cuda.set_device = lambda d: None
+    torch.cuda.device_count = lambda: int(os.environ.get("WORLD_SIZE", "1"))
+    torch.cuda.synchronize = lambda: None
+    torch.cuda.reset_peak_memory_stats = lambda d=None: None
+    torch.cuda.max_memory_allocated = lambda d=None: 0
+
+    # 2. Intercept hardcoded 'cuda' strings in ALL PyTorch factory functions
+    _orig_tensor = torch.tensor
+    _orig_zeros = torch.zeros
+    _orig_ones = torch.ones
+    _orig_empty = torch.empty
+
+    def _swap_device(kwargs):
+        if 'device' in kwargs and str(kwargs['device']).startswith('cuda'):
+            kwargs['device'] = 'cpu'
+        return kwargs
+
+    torch.tensor = lambda *args, **kwargs: _orig_tensor(*args, **_swap_device(kwargs))
+    torch.zeros = lambda *args, **kwargs: _orig_zeros(*args, **_swap_device(kwargs))
+    torch.ones = lambda *args, **kwargs: _orig_ones(*args, **_swap_device(kwargs))
+    torch.empty = lambda *args, **kwargs: _orig_empty(*args, **_swap_device(kwargs))
+
+    # 3. Force all CPU tensors to report themselves as CUDA tensors
+    _orig_tensor_type = torch.Tensor.type
+    def _patched_type(self, *args, **kwargs):
+        res = _orig_tensor_type(self, *args, **kwargs)
+        if isinstance(res, str) and res.startswith('torch.') and not res.startswith('torch.cuda.'):
+            return res.replace('torch.', 'torch.cuda.')
+        return res
+    torch.Tensor.type = _patched_type
+
+    # 4. Force the is_cuda property to always return True
+    torch.Tensor.is_cuda = property(lambda self: True)
+
+    # 5. Bypass Megatron's CUDA RNG Tracker in the Attention Layer
+    import contextlib
+    @contextlib.contextmanager
+    def _dummy_ctx(): yield
+
+    try:
+        # Patch the class method directly so it applies globally everywhere
+        import megatron.core.tensor_parallel.random as mpu_random
+        mpu_random.CudaRNGStatesTracker.fork = lambda self, *args, **kwargs: _dummy_ctx()
+    except ImportError:
+        pass
+# ----------------------------------------------------------------
+
 from torch.utils.data import DataLoader
 from megatron.core import parallel_state
 from megatron.core.datasets.blended_megatron_dataset_builder import (
@@ -165,10 +217,10 @@ def get_optimizer(model):
     return optim
 
 
-def get_train_data_iterator(vocab_size, micro_batch_size):
+def get_train_data_iterator(vocab_size, micro_batch_size, sequence_length):
     config = GPTDatasetConfig(
         random_seed=42,
-        sequence_length=4096,
+        sequence_length=sequence_length,
         reset_position_ids=False,
         reset_attention_mask=False,
         eod_mask_loss=False,
@@ -212,6 +264,7 @@ def main(
     gradient_accumulation,
     recompute_activations,
     iterations,
+    sequence_length
 ):
     # Safely fetch environment variables with defaults
     world_size = int(os.environ.get("WORLD_SIZE", "1"))
@@ -253,7 +306,7 @@ def main(
         ffn_hidden_size,
         num_attention_heads,
         vocab_size,
-        4096,
+        sequence_length,
         recompute_activations
     )
     model = model.to(device)
@@ -263,7 +316,7 @@ def main(
         print(f"Model size: {sum(p.numel() for p in model.parameters())}")
 
     optim = get_optimizer(model)
-    train_iterator = get_train_data_iterator(vocab_size, micro_batch_size)
+    train_iterator = get_train_data_iterator(vocab_size, micro_batch_size, sequence_length)
 
     duras = []
     duras_wall = []
@@ -276,7 +329,7 @@ def main(
             data_iterator=train_iterator,
             model=model,
             num_microbatches=gradient_accumulation,
-            seq_length=4096,
+            seq_length=sequence_length,
             micro_batch_size=micro_batch_size,
             forward_only=False,
         )
@@ -319,6 +372,7 @@ if __name__ == "__main__":
     parser.add_argument("--gradient_accumulation", type=int, default=1)
     parser.add_argument("--recompute_activations", action="store_true")
     parser.add_argument("--iterations", type=int, default=4)
+    parser.add_argument("--sequence_length", type=int, default=1024)
     args = parser.parse_args()
 
     enable_function_tracer()
@@ -333,5 +387,6 @@ if __name__ == "__main__":
         gradient_accumulation=args.gradient_accumulation,
         recompute_activations=args.recompute_activations,
         iterations=args.iterations,
+        sequence_length=args.sequence_length
     )
     disable_function_tracer()
