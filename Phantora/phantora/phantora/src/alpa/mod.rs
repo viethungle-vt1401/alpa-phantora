@@ -66,8 +66,8 @@ pub fn topological_sort(graph: &ComputeGraph) -> Vec<ComputeNode> {
 
 // --- 3. Intra-Op ILP Solver ---
 const DEVICE_MEMORY_LIMIT_BYTES: f64 = 16.0 * 1024.0 * 1024.0 * 1024.0; // Back to 16GB
-const ALPHA_COMM: f64 = 0.5;
-const BETA_COMM: f64 = 0.05;
+const ALPHA_COMM: f64 = 0.1;
+const BETA_COMM: f64 = 0.000000001;
 const RESHARDING_PENALTY: f64 = 2.5;
 
 #[derive(Clone, Copy)]
@@ -234,6 +234,7 @@ fn dp_inner_ilp_pruned(
 
 pub fn find_optimal_pipeline(layers: &[ComputeNode], num_devices: usize, num_microbatches: f64) -> (f64, Vec<(usize, usize, usize)>) {
     println!("Precomputing exact ILP intra-op strategies...");
+    println!("RUN CONFIG -> GPUs: {}, Alpha: {}, Beta: {}, Memory: {} GB", num_devices, ALPHA_COMM, BETA_COMM, DEVICE_MEMORY_LIMIT_BYTES / 1e9);
     let ilp_matrix = build_ilp_cost_matrix(layers, num_devices);
     
     // FIX: Calculate a robust 'high' bound dynamically.

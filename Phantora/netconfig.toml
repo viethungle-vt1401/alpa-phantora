@@ -1,5 +1,10 @@
 
-host_mapping = ['host-1', 'host-2', 'host-3', 'host-4']
+host_mapping = [
+    'host-1', 'host-2', 'host-3', 'host-4',
+    'host-5', 'host-6', 'host-7', 'host-8',
+    'host-9', 'host-10', 'host-11', 'host-12',
+    'host-13', 'host-14', 'host-15', 'host-16'
+]
 
 [simulator]
 loopback_speed = 2880
@@ -10,8 +15,8 @@ type = "TwoLayerMultiPath"
 
 [topology.args]
 nspines = 2
-nracks = 2
-rack_size = 2
+nracks = 4
+rack_size = 4
 host_bw = 800
 rack_uplink_port_bw = 800
 load_balancer_type = "EcmpEverything"

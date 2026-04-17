@@ -56,7 +56,7 @@ SIM_PID=$!
 wait $SIM_PID
 
 # 9. Clean up the JSON file to save disk space on the cluster
-rm ${GRAPH_FILENAME}
+# rm ${GRAPH_FILENAME}
 echo "Cleaned up ${GRAPH_FILENAME}."
 
 echo "Simulation complete for Job ${JOB_ID}."
